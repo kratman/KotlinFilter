@@ -41,4 +41,20 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     fun getVariance(): D2Array<Double> {
         return P
     }
+
+    fun setProcessNoise(noise: D2Array<Double>) {
+        Q = noise
+    }
+
+    fun getProcessNoise(): D2Array<Double> {
+        return Q
+    }
+
+    fun setMeasurementNoise(noise: D2Array<Double>) {
+        R = noise
+    }
+
+    fun getMeasurementNoise(): D2Array<Double> {
+        return R
+    }
 }
