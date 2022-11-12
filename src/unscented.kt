@@ -1,44 +1,44 @@
 
 package src
 
+import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.ndarray.data.*
 
-abstract class Unscented(stateLength: Int, measurementLength: Int, weight: Double) {
-    var stateSize: Int = stateLength
-    var measurementSize: Int = measurementLength
-    var diagnonalWeight: Double = weight
-    var s = MutableList(stateSize, 1)
-    var P = MutableList(stateSize, stateSize)
-    var Q = MutableList(stateSize, stateSize)
-    var R = MutableList(measurementSize, measurementSize)
-    var sigmaPoints = MutableList(stateSize, measurementSize)
+abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: Double) {
+    private var stateSize: Int = stateLength
+    private var measurementSize: Int = measurementLength
+    var diagonalWeight: Double = weight
+    var s = mk.zeros<Double>(stateSize)
+    var P = mk.identity<Double>(stateSize)
+    var Q = mk.identity<Double>(stateSize)
+    var R = mk.identity<Double>(measurementSize)
+    var sigmaPoints = mk.identity<Double>(stateSize)
 
-    abstract fun predictModel(state, parameters)
+    abstract fun predictModel(state: D1Array<Double>, parameters: D1Array<Double>)
 
-    abstract fun measurementModel(state)
+    abstract fun measurementModel(state: D1Array<Double>)
 
-    fun predictSigmaPoints(parameters) {
-
-    }
-
-    fun updateSigmaPoints(measurements) {
+    fun predictSigmaPoints(parameters: D1Array<Double>) {
 
     }
 
-    fun setState(state) {
+    fun updateSigmaPoints(measurements: D2Array<Double>) {
 
     }
 
-    fun getState() {
+    fun setState(state: D1Array<Double>) {
+        s = state
+    }
+
+    fun getState(): D1Array<Double> {
         return s
     }
 
-    fun setVariance(variance) {
-
+    fun setVariance(variance: D2Array<Double>) {
+        P = variance
     }
 
-    fun getVariance() {
+    fun getVariance(): D2Array<Double> {
         return P
     }
-
-
 }
