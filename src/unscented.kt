@@ -18,14 +18,6 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
 
     abstract fun measurementModel(state: D1Array<Double>)
 
-    fun predictSigmaPoints(parameters: D1Array<Double>) {
-
-    }
-
-    fun updateSigmaPoints(measurements: D2Array<Double>) {
-
-    }
-
     fun setState(state: D1Array<Double>) {
         s = state
     }
@@ -56,5 +48,37 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
 
     fun getMeasurementNoise(): D2Array<Double> {
         return R
+    }
+
+    fun getNumberOfStates(): Int {
+        return 2 * stateSize + 1
+    }
+
+    fun sigmaStepSize(): Double {
+        return kotlin.math.sqrt(stateSize / (1.0 - weightDiagonal()))
+    }
+
+    fun weightOffDiagonal(): Double {
+        return (1.0 - weightDiagonal()) / (2.0 * stateSize)
+    }
+
+    private fun weightDiagonal(): Double {
+        return diagonalWeight
+    }
+
+    fun predictSigmaPoints(parameters: D1Array<Double>) {
+
+    }
+
+    fun updateSigmaPoints(measurements: D2Array<Double>) {
+
+    }
+
+    fun unscentedSample() {
+
+    }
+
+    private fun choleskyDecomposition(matrixToDecompose: D2Array<Double>): D2Array<Double> {
+        return mk.zeros(1, 1)
     }
 }
