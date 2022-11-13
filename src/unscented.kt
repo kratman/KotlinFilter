@@ -4,6 +4,9 @@ package src
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
+typealias array1D = D1Array<Double>
+typealias array2D = D2Array<Double>
+
 abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: Double) {
     private var stateSize: Int = stateLength
     private var measurementSize: Int = measurementLength
@@ -14,39 +17,39 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     var R = mk.identity<Double>(measurementSize)
     var sigmaPoints = mk.identity<Double>(stateSize)
 
-    abstract fun predictModel(state: D1Array<Double>, parameters: D1Array<Double>)
+    abstract fun predictModel(state: array1D, parameters: array1D)
 
-    abstract fun measurementModel(state: D1Array<Double>)
+    abstract fun measurementModel(state: array1D)
 
-    fun setState(state: D1Array<Double>) {
+    fun setState(state: array1D) {
         s = state
     }
 
-    fun getState(): D1Array<Double> {
+    fun getState(): array1D {
         return s
     }
 
-    fun setVariance(variance: D2Array<Double>) {
+    fun setVariance(variance: array2D) {
         P = variance
     }
 
-    fun getVariance(): D2Array<Double> {
+    fun getVariance(): array2D {
         return P
     }
 
-    fun setProcessNoise(noise: D2Array<Double>) {
+    fun setProcessNoise(noise: array2D) {
         Q = noise
     }
 
-    fun getProcessNoise(): D2Array<Double> {
+    fun getProcessNoise(): array2D {
         return Q
     }
 
-    fun setMeasurementNoise(noise: D2Array<Double>) {
+    fun setMeasurementNoise(noise: array2D) {
         R = noise
     }
 
-    fun getMeasurementNoise(): D2Array<Double> {
+    fun getMeasurementNoise(): array2D {
         return R
     }
 
@@ -66,11 +69,11 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
         return diagonalWeight
     }
 
-    fun predictSigmaPoints(parameters: D1Array<Double>) {
+    fun predictSigmaPoints(parameters: array1D) {
 
     }
 
-    fun updateSigmaPoints(measurements: D2Array<Double>) {
+    fun updateSigmaPoints(measurements: array2D) {
 
     }
 
@@ -78,7 +81,38 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
 
     }
 
-    private fun choleskyDecomposition(matrixToDecompose: D2Array<Double>): D2Array<Double> {
+    private fun choleskyDecomposition(matrixToDecompose: array2D): array2D {
+        return mk.zeros(1, 1)
+    }
+
+    fun generatePredictedStates(parameters: array1D): array2D {
+        return mk.zeros(1, 1)
+    }
+
+    fun determineAverageState(parameters: array1D): array1D {
+        return mk.zeros(1)
+    }
+
+    fun calculatePredictedVariance(predictedStates: array2D,
+                                   newState: array1D): array2D {
+        return mk.zeros(1, 1)
+    }
+
+    fun generateMeasuredStates(): array2D {
+        return mk.zeros(1, 1)
+    }
+
+    fun calculateAverageMeasurement(measuredStates: array2D): array1D {
+        return mk.zeros(1)
+    }
+
+    fun estimateResidual(measuredStates: array2D,
+                         averageMeasurement: array1D): array2D {
+        return mk.zeros(1, 1)
+    }
+
+    fun calculateCrossCovariance(measuredStates: array2D,
+                                 averageMeasurement: array1D): array2D {
         return mk.zeros(1, 1)
     }
 }
