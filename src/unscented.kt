@@ -2,6 +2,7 @@
 package src
 
 import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.linalg.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 typealias array1D = D1Array<Double>
@@ -70,11 +71,22 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     }
 
     fun predictSigmaPoints(parameters: array1D) {
-
+        unscentedSample()
+        val predictedStates = generatePredictedStates(parameters)
+        val newState = determineAverageState(predictedStates)
+        P = calculatePredictedVariance(predictedStates, newState)
+        s = newState
     }
 
-    fun updateSigmaPoints(measurements: array2D) {
-
+    fun updateSigmaPoints(measurement: array1D) {
+        unscentedSample()
+        val measuredStates = generateMeasuredStates()
+        val averageMeasurement = calculateAverageMeasurement(measuredStates)
+        val residual = estimateResidual(measuredStates, averageMeasurement)
+        val crossCoVar = calculateCrossCovariance(measuredStates, averageMeasurement)
+        val gain = mk.linalg.dot(crossCoVar, mk.linalg.inv(residual))
+        s = s + mk.linalg.dot(gain, (measurement - averageMeasurement))
+        P = P - mk.linalg.dot(gain, mk.linalg.dot(residual, transpose(gain)))
     }
 
     fun unscentedSample() {
@@ -89,7 +101,7 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
         return mk.zeros(1, 1)
     }
 
-    fun determineAverageState(parameters: array1D): array1D {
+    fun determineAverageState(predictedStates: array2D): array1D {
         return mk.zeros(1)
     }
 
