@@ -86,7 +86,7 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
         val crossCoVar = calculateCrossCovariance(measuredStates, averageMeasurement)
         val gain = mk.linalg.dot(crossCoVar, mk.linalg.inv(residual))
         s = s + mk.linalg.dot(gain, (measurement - averageMeasurement))
-        P = P - mk.linalg.dot(gain, mk.linalg.dot(residual, transpose(gain)))
+        P = P - mk.linalg.dot(gain, mk.linalg.dot(residual, gain.transpose()))
     }
 
     fun unscentedSample() {
@@ -94,6 +94,20 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     }
 
     private fun choleskyDecomposition(matrixToDecompose: array2D): array2D {
+        val size = matrixToDecompose.size
+        var sum: Double = 0.0
+        var tempArray = mk.zeros<Double>(1)
+        for (i in 0 until size) {
+            for (j in i until size) {
+                sum = matrixToDecompose[i][j]
+                for (k in i-1 downTo 0) {
+                    sum -= matrixToDecompose[i][k] * matrixToDecompose[j][k]
+                }
+                if (i == j) {
+
+                }
+            }
+        }
         return mk.zeros(1, 1)
     }
 
