@@ -4,6 +4,8 @@ package src
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.api.linalg.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.operations.plus
+import org.jetbrains.kotlinx.multik.ndarray.operations.minus
 
 typealias array1D = D1Array<Double>
 typealias array2D = D2Array<Double>
@@ -85,8 +87,8 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
         val residual = estimateResidual(measuredStates, averageMeasurement)
         val crossCoVar = calculateCrossCovariance(measuredStates, averageMeasurement)
         val gain = mk.linalg.dot(crossCoVar, mk.linalg.inv(residual))
-        s = s + mk.linalg.dot(gain, (measurement - averageMeasurement))
-        P = P - mk.linalg.dot(gain, mk.linalg.dot(residual, gain.transpose()))
+        s += mk.linalg.dot(gain, (measurement - averageMeasurement))
+        P -= mk.linalg.dot(gain, mk.linalg.dot(residual, gain.transpose()))
     }
 
     fun unscentedSample() {
@@ -94,21 +96,26 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     }
 
     private fun choleskyDecomposition(matrixToDecompose: array2D): array2D {
-        val size = matrixToDecompose.size
-        var sum: Double = 0.0
-        var tempArray = mk.zeros<Double>(1)
-        for (i in 0 until size) {
-            for (j in i until size) {
-                sum = matrixToDecompose[i][j]
+        var lowerMatrix: array2D = matrixToDecompose
+        for (i in 0 until stateSize) {
+            for (j in i until stateSize) {
+                var sum = lowerMatrix[i, j]
                 for (k in i-1 downTo 0) {
-                    sum -= matrixToDecompose[i][k] * matrixToDecompose[j][k]
+                    sum -= lowerMatrix[i, k] * lowerMatrix[j, k]
                 }
                 if (i == j) {
-
+                    lowerMatrix[i, i] = kotlin.math.sqrt(sum)
+                } else {
+                    lowerMatrix[j, i] = sum / lowerMatrix[i, i]
                 }
             }
         }
-        return mk.zeros(1, 1)
+        for (i in 0 until stateSize) {
+            for (j in 0 until i) {
+                lowerMatrix[j, i] = 0.0
+            }
+        }
+        return lowerMatrix
     }
 
     fun generatePredictedStates(parameters: array1D): array2D {
