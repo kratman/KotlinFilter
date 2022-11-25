@@ -56,15 +56,15 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
         return R
     }
 
-    fun getNumberOfStates(): Int {
+    private fun getNumberOfStates(): Int {
         return 2 * stateSize + 1
     }
 
-    fun sigmaStepSize(): Double {
+    private fun sigmaStepSize(): Double {
         return kotlin.math.sqrt(stateSize / (1.0 - weightDiagonal()))
     }
 
-    fun weightOffDiagonal(): Double {
+    private fun weightOffDiagonal(): Double {
         return (1.0 - weightDiagonal()) / (2.0 * stateSize)
     }
 
@@ -86,17 +86,32 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
         val averageMeasurement = calculateAverageMeasurement(measuredStates)
         val residual = estimateResidual(measuredStates, averageMeasurement)
         val crossCoVar = calculateCrossCovariance(measuredStates, averageMeasurement)
-        val gain = mk.linalg.dot(crossCoVar, mk.linalg.inv(residual))
-        s += mk.linalg.dot(gain, (measurement - averageMeasurement))
-        P -= mk.linalg.dot(gain, mk.linalg.dot(residual, gain.transpose()))
+        val gain = crossCoVar dot mk.linalg.inv(residual)
+        s += gain dot (measurement - averageMeasurement)
+        P -= gain dot (residual dot gain.transpose())
     }
 
-    fun unscentedSample() {
-
+    private fun unscentedSample() {
+        var decomposedVariances = choleskyDecomposition(P)
+        for (j in 0 until stateSize) {
+            sigmaPoints[j, 0] = s[j]
+        }
+        for (i in 0 until stateSize) {
+            val sigmaIndex = i + 1
+            for (j in 0 until stateSize) {
+                sigmaPoints[j, sigmaIndex] = s[j] + (sigmaStepSize() * decomposedVariances[j, i])
+            }
+        }
+        for (i in 0 until stateSize) {
+            val sigmaIndex = i + stateSize + 1
+            for (j in 0 until stateSize) {
+                sigmaPoints[j, sigmaIndex] = s[j] - (sigmaStepSize() * decomposedVariances[j, i])
+            }
+        }
     }
 
     private fun choleskyDecomposition(matrixToDecompose: array2D): array2D {
-        var lowerMatrix: array2D = matrixToDecompose
+        var lowerMatrix = matrixToDecompose.copy()
         for (i in 0 until stateSize) {
             for (j in i until stateSize) {
                 var sum = lowerMatrix[i, j]
@@ -118,34 +133,43 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
         return lowerMatrix
     }
 
-    fun generatePredictedStates(parameters: array1D): array2D {
+    private fun generatePredictedStates(parameters: array1D): array2D {
         return mk.zeros(1, 1)
     }
 
-    fun determineAverageState(predictedStates: array2D): array1D {
-        return mk.zeros(1)
+    private fun determineAverageState(predictedStates: array2D): array1D {
+        val newState: array1D = mk.zeros(stateSize)
+        for (j in 0 until stateSize) {
+            newState[j] = weightDiagonal() * predictedStates[j, 0]
+        }
+        for (i in 1 until getNumberOfStates()) {
+            for (j in 0 until stateSize) {
+                newState[j] += weightOffDiagonal() * predictedStates[j, i]
+            }
+        }
+        return newState
     }
 
-    fun calculatePredictedVariance(predictedStates: array2D,
+    private fun calculatePredictedVariance(predictedStates: array2D,
                                    newState: array1D): array2D {
         return mk.zeros(1, 1)
     }
 
-    fun generateMeasuredStates(): array2D {
+    private fun generateMeasuredStates(): array2D {
         return mk.zeros(1, 1)
     }
 
-    fun calculateAverageMeasurement(measuredStates: array2D): array1D {
+    private fun calculateAverageMeasurement(measuredStates: array2D): array1D {
         return mk.zeros(1)
     }
 
-    fun estimateResidual(measuredStates: array2D,
-                         averageMeasurement: array1D): array2D {
+    private fun estimateResidual(measuredStates: array2D,
+                                 averageMeasurement: array1D): array2D {
         return mk.zeros(1, 1)
     }
 
-    fun calculateCrossCovariance(measuredStates: array2D,
-                                 averageMeasurement: array1D): array2D {
+    private fun calculateCrossCovariance(measuredStates: array2D,
+                                         averageMeasurement: array1D): array2D {
         return mk.zeros(1, 1)
     }
 }
