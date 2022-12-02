@@ -6,6 +6,7 @@ import org.jetbrains.kotlinx.multik.api.linalg.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.plus
 import org.jetbrains.kotlinx.multik.ndarray.operations.minus
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
 
 typealias array1D = D1Array<Double>
 typealias array2D = D2Array<Double>
@@ -158,8 +159,20 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     }
 
     private fun calculatePredictedVariance(predictedStates: array2D,
-                                   newState: array1D): array2D {
-        return mk.zeros(1, 1)
+                                           newState: array1D): array2D {
+        var newVariances = Q.copy()
+        var update: array1D = mk.zeros(stateSize)
+        for (j in 0 until stateSize) {
+            update[j] = predictedStates[j, 0] - newState[j]
+        }
+        newVariances += weightDiagonal() * update dot update.transpose()
+        for (i in 1 until getNumberOfStates()) {
+            for (j in 0 until stateSize) {
+                update[j] = predictedStates[j, i] - newState[j]
+            }
+            newVariances += weightOffDiagonal() * update dot update.transpose()
+        }
+        return newVariances
     }
 
     private fun generateMeasuredStates(): array2D {
