@@ -227,7 +227,7 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
         for (j in 0 until stateSize) {
             stateDiff[j] = sigmaPoints[j, 0] - s[j]
         }
-        crossCoVar += weightDiagonal() * stateDiff dot measDiff
+        crossCoVar += weightDiagonal() * stateDiff dot measDiff.transpose()
         for (i in 1 until getNumberOfStates()) {
             for (j in 0 until measurementSize) {
                 measDiff[j] = measuredStates[j, i] - averageMeasurement[j]
@@ -235,7 +235,7 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
             for (j in 0 until stateSize) {
                 stateDiff[j] = sigmaPoints[j, i] - s[j]
             }
-            crossCoVar += weightOffDiagonal() * stateDiff dot measDiff
+            crossCoVar += weightOffDiagonal() * stateDiff dot measDiff.transpose()
         }
         return crossCoVar
     }
