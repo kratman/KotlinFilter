@@ -49,7 +49,8 @@ For instance, if the state is {x,y} position and the measurement is in polar coo
 ```kotlin
     fun measurementModel(state: array1D) : array1D {
         var measurement: array1D = mk.zeros(measurementSize)
-        measurement[radiusIndex] = sqrt(state[xIndex] * state[xIndex] + state[yIndex] * state[yIndex])
+        val radius = state[xIndex] * state[xIndex] + state[yIndex] * state[yIndex]
+        measurement[radiusIndex] = sqrt(radius)
         measurement[thetaIndex] = atan2(state[yIndex], state[xIndex])
         return measurement
     }
