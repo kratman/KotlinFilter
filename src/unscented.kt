@@ -19,7 +19,7 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     private var P = mk.identity<Double>(stateSize)
     private var Q = mk.identity<Double>(stateSize)
     private var R = mk.identity<Double>(measurementSize)
-    private var sigmaPoints = mk.identity<Double>(stateSize)
+    private var sigmaPoints = mk.zeros<Double>(stateSize, getNumberOfStates())
 
     abstract fun predictModel(state: array1D, parameters: array1D) : array1D
 
@@ -135,7 +135,7 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     }
 
     private fun generatePredictedStates(parameters: array1D): array2D {
-        val predictedStates: array2D = mk.zeros(stateSize, stateSize)
+        val predictedStates: array2D = mk.zeros(stateSize, getNumberOfStates())
         for (i in 0 until getNumberOfStates()) {
             val nextState = predictModel(sigmaPoints[0 until stateSize, i] as array1D, parameters)
             for (j in 0 until stateSize) {
