@@ -212,7 +212,7 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
 
     private fun calculateCrossCovariance(measuredStates: array2D,
                                          averageMeasurement: array1D): array2D {
-        var crossCoVar: array2D = mk.zeros(measurementSize, stateSize)
+        var crossCoVar: array2D = mk.zeros(stateSize, measurementSize)
         val measDiff: array1D = mk.zeros(measurementSize)
         val stateDiff: array1D = mk.zeros(stateSize)
         var weight = weightDiagonal()
