@@ -15,7 +15,7 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     private var stateSize: Int = stateLength
     private var measurementSize: Int = measurementLength
     private var diagonalWeight: Double = weight
-    private var s = mk.zeros<Double>(stateSize)
+    private var s = mk.zeros<Double>(stateSize, 1)
     private var P = mk.identity<Double>(stateSize)
     private var Q = mk.identity<Double>(stateSize)
     private var R = mk.identity<Double>(measurementSize)
@@ -26,11 +26,13 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     abstract fun measurementModel(state: array1D) : array1D
 
     fun setState(state: array1D) {
-        s = state
+        for (i in 0 until stateSize) {
+            s[i, 0] = state[i]
+        }
     }
 
     fun getState(): array1D {
-        return s
+        return s[0 until stateSize, 0] as array1D
     }
 
     fun setVariance(variance: array2D) {
@@ -87,26 +89,36 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
         val averageMeasurement = calculateAverageMeasurement(measuredStates)
         val residual = estimateResidual(measuredStates, averageMeasurement)
         val crossCoVar = calculateCrossCovariance(measuredStates, averageMeasurement)
-        val gain = crossCoVar dot mk.linalg.inv(residual)
-        s += gain dot (measurement - averageMeasurement)
-        P -= gain dot (residual dot gain.transpose())
+        val gain = crossCoVar * mk.linalg.inv(residual)
+        val measurementDiff = getMeasurementDifference(measurement, averageMeasurement)
+        s += gain * measurementDiff
+        P -= gain * (residual * gain.transpose())
+    }
+
+    private fun getMeasurementDifference(measurement: array1D,
+                                         averageMeasurement: array1D): array2D {
+        val measurementDiff: array2D = mk.zeros(measurementSize, 0)
+        for (i in 0 until measurementSize) {
+            measurementDiff[i, 0] = measurement[i] - averageMeasurement[i]
+        }
+        return measurementDiff
     }
 
     private fun unscentedSample() {
         val decomposedVariances = choleskyDecomposition(P)
         for (j in 0 until stateSize) {
-            sigmaPoints[j, 0] = s[j]
+            sigmaPoints[j, 0] = s[j, 0]
         }
         for (i in 0 until stateSize) {
             val sigmaIndex = i + 1
             for (j in 0 until stateSize) {
-                sigmaPoints[j, sigmaIndex] = s[j] + (sigmaStepSize() * decomposedVariances[j, i])
+                sigmaPoints[j, sigmaIndex] = s[j, 0] + (sigmaStepSize() * decomposedVariances[j, i])
             }
         }
         for (i in 0 until stateSize) {
             val sigmaIndex = i + stateSize + 1
             for (j in 0 until stateSize) {
-                sigmaPoints[j, sigmaIndex] = s[j] - (sigmaStepSize() * decomposedVariances[j, i])
+                sigmaPoints[j, sigmaIndex] = s[j, 0] - (sigmaStepSize() * decomposedVariances[j, i])
             }
         }
     }
@@ -145,12 +157,12 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
         return predictedStates
     }
 
-    private fun determineAverageState(predictedStates: array2D): array1D {
-        val newState: array1D = mk.zeros(stateSize)
+    private fun determineAverageState(predictedStates: array2D): array2D {
+        val newState: array2D = mk.zeros(stateSize, 1)
         var weight = weightDiagonal()
         for (i in 0 until getNumberOfStates()) {
             for (j in 0 until stateSize) {
-                newState[j] += weight * predictedStates[j, i]
+                newState[j, 0] += weight * predictedStates[j, i]
             }
             weight = weightOffDiagonal()
         }
@@ -158,13 +170,13 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
     }
 
     private fun calculatePredictedVariance(predictedStates: array2D,
-                                           newState: array1D): array2D {
+                                           newState: array2D): array2D {
         var newVariances = Q.copy()
         val update: array1D = mk.zeros(stateSize)
         var weight = weightDiagonal()
         for (i in 0 until getNumberOfStates()) {
             for (j in 0 until stateSize) {
-                update[j] = predictedStates[j, i] - newState[j]
+                update[j] = predictedStates[j, i] - newState[j, 0]
             }
             newVariances += weight * update dot update.transpose()
             weight = weightOffDiagonal()
@@ -221,7 +233,7 @@ abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: D
                 measDiff[j] = measuredStates[j, i] - averageMeasurement[j]
             }
             for (j in 0 until stateSize) {
-                stateDiff[j] = sigmaPoints[j, i] - s[j]
+                stateDiff[j] = sigmaPoints[j, i] - s[j, 0]
             }
             crossCoVar += weight * stateDiff dot measDiff.transpose()
             weight = weightOffDiagonal()
