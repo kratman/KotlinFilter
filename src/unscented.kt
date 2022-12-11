@@ -12,8 +12,9 @@ typealias array1D = D1Array<Double>
 typealias array2D = D2Array<Double>
 
 abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: Double) {
-    private var stateSize: Int = stateLength
-    private var measurementSize: Int = measurementLength
+    var stateSize: Int = stateLength
+    var measurementSize: Int = measurementLength
+
     private var diagonalWeight: Double = weight
     private var s = mk.zeros<Double>(stateSize, 1)
     private var P = mk.identity<Double>(stateSize)
