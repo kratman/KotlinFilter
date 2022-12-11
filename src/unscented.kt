@@ -11,17 +11,27 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.times
 typealias array1D = D1Array<Double>
 typealias array2D = D2Array<Double>
 
-abstract class UnscentedBase(stateLength: Int, measurementLength: Int, weight: Double) {
-    var stateSize: Int = stateLength
-    var measurementSize: Int = measurementLength
+abstract class UnscentedBase {
+    var stateSize: Int
+    var measurementSize: Int
+    private var diagonalWeight: Double
+    private var s: array2D
+    private var P: array2D
+    private var Q: array2D
+    private var R: array2D
+    private var sigmaPoints: array2D
 
-    private var diagonalWeight: Double = weight
-    private var s = mk.zeros<Double>(stateSize, 1)
-    private var P = mk.identity<Double>(stateSize)
-    private var Q = mk.identity<Double>(stateSize)
-    private var R = mk.identity<Double>(measurementSize)
-    private var sigmaPoints = mk.zeros<Double>(stateSize, getNumberOfStates())
+    constructor(stateLength: Int, measurementLength: Int, weight: Double) {
+        stateSize = stateLength
+        measurementSize = measurementLength
 
+        diagonalWeight = weight
+        s = mk.zeros(stateSize, 1)
+        P = mk.identity(stateSize)
+        Q = mk.identity(stateSize)
+        R = mk.identity(measurementSize)
+        sigmaPoints = mk.zeros(stateSize, getNumberOfStates())
+    }
     abstract fun predictModel(state: array1D, parameters: array1D) : array1D
 
     abstract fun measurementModel(state: array1D) : array1D
