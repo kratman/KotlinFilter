@@ -3,20 +3,24 @@
 
 Several examples for using the unscented Kalman filter are provided.
 
-## Moving in a loop
+## Position tracking
 
 - State: Position
 - Measurement: Position
+
+### Moving in a loop
+
 - Input: Measurements in a loop
 
-## Moving in a loop with velocity
+## Position and velocity tracking
 
 - State: Position and velocity
 - Measurement: Position
+
+### Moving in a loop with velocity
+
 - Input: Measurements in a loop
 
-## Curved path with noise
+### Curved path with noise
 
-- State: Position and velocity
-- Measurement: Position
 - Input: Measurements in a rough curve with Gaussian noise
