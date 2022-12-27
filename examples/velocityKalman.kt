@@ -2,6 +2,7 @@ package examples
 
 import src.*
 import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 class VelocityFilter : UnscentedBase {
     constructor(x: Double, y: Double) : super(4, 2, 0.25) {
@@ -18,10 +19,13 @@ class VelocityFilter : UnscentedBase {
     }
 
     override fun predictModel(state: array1D, parameters: array1D) : array1D {
-        return mk.zeros(stateSize)
+        val newState = state.copy()
+        newState[0] += state[2]
+        newState[1] += state[3]
+        return newState
     }
 
     override fun measurementModel(state: array1D) : array1D {
-        return mk.zeros(measurementSize)
+        return mk.ndarray(mk[state[0], state[1]])
     }
 }

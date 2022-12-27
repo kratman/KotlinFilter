@@ -12,10 +12,10 @@ class PositionFilter : UnscentedBase {
     }
 
     override fun predictModel(state: array1D, parameters: array1D) : array1D {
-        return mk.zeros(stateSize)
+        return state.copy()
     }
 
     override fun measurementModel(state: array1D) : array1D {
-        return mk.zeros(measurementSize)
+        return state.copy()
     }
 }
