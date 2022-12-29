@@ -3,24 +3,31 @@
 
 Several examples for using the unscented Kalman filter are provided.
 
-## Position tracking
+## Filters
+
+### Position tracking
 
 - State: Position
 - Measurement: Position
 
-### Moving in a loop
-
-- Input: Measurements in a loop
-
-## Position and velocity tracking
+### Position and velocity tracking
 
 - State: Position and velocity
 - Measurement: Position
 
-### Moving in a loop with velocity
+## Inputs
 
-- Input: Measurements in a loop
+### Sinusoid with missed points
 
-### Curved path with noise
+An example to show how the Kalman filter compensates for missing data.
 
-- Input: Measurements in a rough curve with Gaussian noise
+- y = 10 * sin(x / 100)
+- Multiple predictions between measurements
+
+### Sinusoid with noise
+
+An example to show how the Kalman filter smooths noisy data
+
+- y = 10 * sin(x / 100) + g(x)
+- A prediction and measurement at each step
+- Random noise, g(x), applied at each step
