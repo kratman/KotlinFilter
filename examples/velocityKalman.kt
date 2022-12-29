@@ -20,8 +20,9 @@ class VelocityFilter : UnscentedBase {
 
     override fun predictModel(state: array1D, parameters: array1D) : array1D {
         val newState = state.copy()
-        newState[0] += state[2]
-        newState[1] += state[3]
+        val timeStep = 1.0
+        newState[0] += state[2] * timeStep
+        newState[1] += state[3] * timeStep
         return newState
     }
 
