@@ -11,7 +11,7 @@ class PositionFilter : UnscentedBase {
         setMeasurementNoise(mk.ndarray(mk[mk[0.1, 0.0], mk[0.0, 0.1]]))
     }
 
-    override fun predictModel(state: array1D, parameters: array1D) : array1D {
+    override fun predictModel(state: array1D, parameters: array1D?) : array1D {
         return state.copy()
     }
 

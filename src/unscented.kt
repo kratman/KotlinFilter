@@ -32,7 +32,7 @@ abstract class UnscentedBase {
         R = mk.identity(measurementSize)
         sigmaPoints = mk.zeros(stateSize, getNumberOfStates())
     }
-    abstract fun predictModel(state: array1D, parameters: array1D) : array1D
+    abstract fun predictModel(state: array1D, parameters: array1D?) : array1D
 
     abstract fun measurementModel(state: array1D) : array1D
 
@@ -86,7 +86,7 @@ abstract class UnscentedBase {
         return diagonalWeight
     }
 
-    fun predictSigmaPoints(parameters: array1D) {
+    fun predictSigmaPoints(parameters: array1D?) {
         unscentedSample()
         val predictedStates = generatePredictedStates(parameters)
         val newState = determineAverageState(predictedStates)
@@ -157,7 +157,7 @@ abstract class UnscentedBase {
         return lowerMatrix
     }
 
-    private fun generatePredictedStates(parameters: array1D): array2D {
+    private fun generatePredictedStates(parameters: array1D?): array2D {
         val predictedStates: array2D = mk.zeros(stateSize, getNumberOfStates())
         for (i in 0 until getNumberOfStates()) {
             val nextState = predictModel(sigmaPoints[0 until stateSize, i] as array1D, parameters)
