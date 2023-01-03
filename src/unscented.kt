@@ -86,7 +86,7 @@ abstract class UnscentedBase {
         return diagonalWeight
     }
 
-    fun predictSigmaPoints(parameters: array1D?) {
+    fun predictSigmaPoints(parameters: array1D? = null) {
         unscentedSample()
         val predictedStates = generatePredictedStates(parameters)
         val newState = determineAverageState(predictedStates)
