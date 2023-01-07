@@ -43,7 +43,7 @@ abstract class UnscentedBase {
     }
 
     fun getState(): array1D {
-        return s[0 until stateSize, 0] as array1D
+        return s[0..stateSize, 0] as array1D
     }
 
     fun setVariance(variance: array2D) {
@@ -160,7 +160,7 @@ abstract class UnscentedBase {
     private fun generatePredictedStates(parameters: array1D?): array2D {
         val predictedStates: array2D = mk.zeros(stateSize, getNumberOfStates())
         for (i in 0 until getNumberOfStates()) {
-            val nextState = predictModel(sigmaPoints[0 until stateSize, i] as array1D, parameters)
+            val nextState = predictModel(sigmaPoints[0..stateSize, i] as array1D, parameters)
             for (j in 0 until stateSize) {
                 predictedStates[j, i] = nextState[j]
             }
@@ -198,7 +198,7 @@ abstract class UnscentedBase {
     private fun generateMeasuredStates(): array2D {
         val measuredStates: array2D = mk.zeros(measurementSize, getNumberOfStates())
         for (i in 0 until getNumberOfStates()) {
-            val measurement = measurementModel(sigmaPoints[0 until stateSize, i] as array1D)
+            val measurement = measurementModel(sigmaPoints[0..stateSize, i] as array1D)
             for (j in 0 until measurementSize) {
                 measuredStates[j, i] = measurement[j]
             }
