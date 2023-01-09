@@ -183,13 +183,13 @@ abstract class UnscentedBase {
     private fun calculatePredictedVariance(predictedStates: array2D,
                                            newState: array2D): array2D {
         var newVariances = Q.copy()
-        val update: array1D = mk.zeros(stateSize)
+        val update: array2D = mk.zeros(stateSize, 1)
         var weight = weightDiagonal()
         for (i in 0 until getNumberOfStates()) {
             for (j in 0 until stateSize) {
-                update[j] = predictedStates[j, i] - newState[j, 0]
+                update[j, 0] = predictedStates[j, i] - newState[j, 0]
             }
-            newVariances += weight * update dot update.transpose()
+            newVariances += weight * (update dot update.transpose())
             weight = weightOffDiagonal()
         }
         return newVariances
