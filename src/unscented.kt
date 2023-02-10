@@ -32,6 +32,7 @@ abstract class UnscentedBase {
         R = mk.identity(measurementSize)
         sigmaPoints = mk.zeros(stateSize, getNumberOfStates())
     }
+
     abstract fun predictModel(state: array1D, parameters: array1D?) : array1D
 
     abstract fun measurementModel(state: array1D) : array1D
