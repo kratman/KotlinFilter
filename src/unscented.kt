@@ -108,7 +108,7 @@ abstract class UnscentedBase {
 
     private fun getMeasurementDifference(measurement: array1D,
                                          averageMeasurement: array1D): array2D {
-        val measurementDiff: array2D = mk.zeros(measurementSize, 0)
+        val measurementDiff: array2D = mk.zeros(measurementSize, 1)
         for (i in 0 until measurementSize) {
             measurementDiff[i, 0] = measurement[i] - averageMeasurement[i]
         }
