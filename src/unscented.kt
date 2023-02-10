@@ -101,10 +101,10 @@ abstract class UnscentedBase {
         val averageMeasurement = calculateAverageMeasurement(measuredStates)
         val residual = estimateResidual(measuredStates, averageMeasurement)
         val crossCoVar = calculateCrossCovariance(measuredStates, averageMeasurement)
-        val gain = crossCoVar * mk.linalg.inv(residual)
+        val gain = crossCoVar dot mk.linalg.inv(residual)
         val measurementDiff = getMeasurementDifference(measurement, averageMeasurement)
-        s += gain * measurementDiff
-        P -= gain * (residual * gain.transpose())
+        s += gain dot measurementDiff
+        P -= gain dot (residual dot gain.transpose())
     }
 
     private fun getMeasurementDifference(measurement: array1D,
