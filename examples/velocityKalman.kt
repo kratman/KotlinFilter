@@ -5,7 +5,7 @@ import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 class VelocityFilter : UnscentedBase {
-    private val timeStepIndex = 1
+    private val timeStepIndex = 0
 
     constructor(x: Double, y: Double) : super(4, 2, 0.25) {
         setState(mk.ndarray(mk[x, y, 0.0, 0.0]))
