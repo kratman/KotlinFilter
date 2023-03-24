@@ -4,8 +4,8 @@ import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 
 
-class cholesky {
-     fun decompose(matrixToDecompose: array2D, size: Int): array2D {
+class Cholesky {
+    fun decompose(matrixToDecompose: array2D, size: Int): array2D {
         val lowerMatrix = matrixToDecompose.copy()
         for (i in 0 until size) {
             for (j in i until size) {
@@ -27,5 +27,4 @@ class cholesky {
         }
         return lowerMatrix
     }
-
 }

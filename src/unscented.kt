@@ -134,7 +134,7 @@ abstract class UnscentedBase {
     }
 
     private fun choleskyDecomposition(matrixToDecompose: array2D): array2D {
-        return cholesky.decompose(matrixToDecompose, stateSize)
+        return Cholesky().decompose(matrixToDecompose, stateSize)
     }
 
     private fun generatePredictedStates(parameters: array1D?): array2D {
