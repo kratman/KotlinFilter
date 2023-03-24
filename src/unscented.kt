@@ -10,8 +10,8 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.times
 
 
 abstract class UnscentedBase {
-    var stateSize: Int
-    var measurementSize: Int
+    private var stateSize: Int
+    private var measurementSize: Int
     private var diagonalWeight: Double
     private var s: array2D
     private var P: array2D
