@@ -13,11 +13,12 @@ class VelocityFilter : UnscentedBase {
                                   mk[0.0, 5.0, 0.0, 0.0],
                                   mk[0.0, 0.0, 0.2, 0.0],
                                   mk[0.0, 0.0, 0.0, 0.2]]))
-        setProcessNoise(mk.ndarray(mk[mk[0.5, 0.0, 0.0, 0.0],
-                                      mk[0.0, 0.5, 0.0, 0.0],
+        setProcessNoise(mk.ndarray(mk[mk[0.1, 0.0, 0.0, 0.0],
+                                      mk[0.0, 0.1, 0.0, 0.0],
                                       mk[0.0, 0.0, 0.1, 0.0],
                                       mk[0.0, 0.0, 0.0, 0.1]]))
-        setMeasurementNoise(mk.ndarray(mk[mk[0.1, 0.0], mk[0.0, 0.1]]))
+        setMeasurementNoise(mk.ndarray(mk[mk[0.5, 0.0],
+                                          mk[0.0, 0.5]]))
     }
 
     override fun predictModel(state: array1D, parameters: array1D?) : array1D {
