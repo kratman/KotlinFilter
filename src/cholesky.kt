@@ -1,5 +1,6 @@
 package src
 
+import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 
@@ -34,4 +35,16 @@ class Cholesky {
         }
         return lowerMatrix
     }
+}
+
+fun outerProduct(first: array1D, second: array1D): array2D {
+    val firstSize = first.shape[0]
+    val secondSize = second.shape[0]
+    val result: array2D = mk.zeros(firstSize, secondSize)
+    for (i in 0 until firstSize) {
+        for (j in 0 until secondSize) {
+            result[i, j] = first[i] * second[j]
+        }
+    }
+    return result
 }
