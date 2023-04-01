@@ -64,6 +64,14 @@ model output matches the shape, size, and order of the measurements.
 The *examples* directory contains a few implementations of **UnscentedBase** to
 demonstrate how to use the filter.
 
+## Dependencies
+
+The following matrix libraries are required for running the filter:
+```
+jetbrains.kotlinx.multik.api
+jetbrains.kotlinx.multik.default
+```
+
 ## Reference
 
 ```
