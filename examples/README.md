@@ -10,12 +10,47 @@ Several examples for using the unscented Kalman filter are provided.
 - State: Position
 - Measurement: Position
 
+This Kalman filter does not predict that the state will change between
+measurements. Only the measurement will cause the state to be updated.
+This Kalman filter is the minimum that could be implemented.
+
 ### Position and velocity tracking
 
 - State: Position and velocity
 - Measurement: Position
 
+This Kalman assumes that the position measurements are changing at some
+undetermined rate, i.e. the state is moving with a velocity. Only the position
+is measured, so the Kalman filter tries to estimate both the position and velocity
+in a way that most closely matches the measurements.
+
+This example is to display how unknown quantities can be estimated and used
+in models.
+
+### Tuning the filters
+
+The Kalman filters provided in the examples are not well tuned to the input.
+The initial covariance, measurement noise and process noise can all be adjusted
+to improve the tracking of the input. Large measurement noise implies that
+the measurements cannot be trusted, while a large process noise implies that the
+predict step cannot be trusted.
+
 ## Inputs
+
+There are two simple main() functions provided to show how to interact
+with the Kalman filters. Each main() imports a kalman filter as "theFilter",
+which allows the user to swap between the two example implementations in the
+preceding section.
+
+For instance,
+```kotlin
+import examples.PositionFilter as theFilter
+```
+or
+```kotlin
+import examples.VelocityFilter as theFilter
+```
+can be used to try to smooth the input.
 
 ### Sinusoid with missed points
 

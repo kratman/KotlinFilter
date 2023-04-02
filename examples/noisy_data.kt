@@ -7,6 +7,10 @@ import kotlin.random.Random
 
 
 fun main() {
+    fun randScale(noise: Double, scale: Double): Double {
+        return (Random.nextDouble() - 0.5) * noise * scale
+    }
+
     val xScale = 50.0
     val yScale = 20.0
     val noiseScale = 0.2
@@ -28,8 +32,4 @@ fun main() {
         val currentState = filter.getState()
         println("$x, $y, $noisyX, $noisyY, ${currentState[0]}, ${currentState[1]}")
     }
-}
-
-fun randScale(noise: Double, scale: Double): Double {
-    return (Random.nextDouble() - 0.5) * noise * scale
 }

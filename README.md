@@ -30,7 +30,7 @@ prediction. The prediction model should handle the time update of the Kalman fil
 For instance if the filter is tracking a car, then the state might be the {x,y} position
 of the vehicle. The prediction model might take velocity and time as the parameters.
 ```kotlin
-    fun predictModel(state: array1D, parameters: array1D) : array1D {
+    override fun predictModel(state: array1D, parameters: array1D) : array1D {
         state[xIndex] += parameters[xVelocityIndex] * parameters[timeIndex]
         state[yIndex] += parameters[yVelocityIndex] * parameters[timeIndex]
         return state
@@ -47,8 +47,8 @@ in some cases heuristics or approximations may be required.
 The measurement model converts the state into the same coordinates as the measurement.
 For instance, if the state is {x,y} position and the measurement is in polar coordinates:
 ```kotlin
-    fun measurementModel(state: array1D) : array1D {
-        var measurement: array1D = mk.zeros(measurementSize)
+    override fun measurementModel(state: array1D) : array1D {
+        val measurement: array1D = mk.zeros(measurementSize)
         val radius = state[xIndex] * state[xIndex] + state[yIndex] * state[yIndex]
         measurement[radiusIndex] = sqrt(radius)
         measurement[thetaIndex] = atan2(state[yIndex], state[xIndex])
@@ -72,7 +72,7 @@ jetbrains.kotlinx.multik.api
 jetbrains.kotlinx.multik.default
 ```
 
-## Reference
+## Theoretical references
 
 ```
 Eric A. Wan and Rudolph van der Merwe,  "The Unscented Kalman Filter for
