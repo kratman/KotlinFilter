@@ -6,7 +6,7 @@
 The **UnscentedBase** class provides all the machinery for the Unscented Kalman filter.
 The user needs to define two functions,
 ```kotlin
-    abstract fun predictModel(state: array1D, parameters: array1D) : array1D
+    abstract fun predictModel(state: array1D, parameters: array1D?) : array1D
 
     abstract fun measurementModel(state: array1D) : array1D
 ```
@@ -22,7 +22,7 @@ which is used to initialize the filter.
 
 ### Prediction
 ```kotlin
-    abstract fun predictModel(state: array1D, parameters: array1D) : array1D
+    abstract fun predictModel(state: array1D, parameters: array1D?) : array1D
 ```
 The parameters argument is an array of the inputs to the dynamic model used for the
 prediction. The prediction model should handle the time update of the Kalman filter.
@@ -30,7 +30,7 @@ prediction. The prediction model should handle the time update of the Kalman fil
 For instance if the filter is tracking a car, then the state might be the {x,y} position
 of the vehicle. The prediction model might take velocity and time as the parameters.
 ```kotlin
-    override fun predictModel(state: array1D, parameters: array1D) : array1D {
+    override fun predictModel(state: array1D, parameters: array1D?) : array1D {
         state[xIndex] += parameters[xVelocityIndex] * parameters[timeIndex]
         state[yIndex] += parameters[yVelocityIndex] * parameters[timeIndex]
         return state
@@ -74,6 +74,7 @@ jetbrains.kotlinx.multik.default
 
 ## Theoretical references
 
+The algorithm in this library is based on the following paper:
 ```
 Eric A. Wan and Rudolph van der Merwe,  "The Unscented Kalman Filter for
 Nonlinear Estimation", Proceedings of the IEEE 2000 Adaptive Systems for

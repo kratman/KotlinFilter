@@ -3,6 +3,10 @@
 
 Several examples for using the unscented Kalman filter are provided.
 
+To use the examples, you will need to copy one of the example main() functions
+provided here into the base directory. Then the example code can be compiled
+to run the examples.
+
 ## Filters
 
 ### Position tracking
